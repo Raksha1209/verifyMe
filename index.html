@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>VerifyMe</title>
+   <link rel="shortcut icon" 
+          href="https://cdn0.iconfinder.com/data/icons/database-64/32/crud_create_read_update_delete-512.png" 
+          type="image/png">
+</head>
+<body>
+<style> 
+body {
+  font-family: Arial, sans-serif;
+  background-image: url('https://cdn.vectorstock.com/i/500p/83/02/abstract-light-blue-background-with-flowing-vector-54338302.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f2ecec;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    form {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    input[type="text"], input[type="email"] {
+      padding: 8px;
+      margin: 5px;
+      width: 200px;
+    }
+
+    button {
+      padding: 8px 12px;
+      margin: 5px;
+      cursor: pointer;
+    }
+
+    table {
+      width: 80%;
+      margin: auto;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #0b0b0b;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #333;
+      color: white;
+    }
+
+    tr:nth-child(even,odd) {
+      background-color: #f4f4f4;
+    }
+</style>
+  <h1 style="font-family: cursive;">MAIL CRUD APPLICATION</h1>
+
+  <form id="crud-form">
+    <input type="text" id="name" placeholder="Enter name" required>
+    <input type="email" id="email" placeholder="Enter email" required>
+    <button type="submit">Add</button>
+    <button type="button" id="updateBtn" style="display:none;">Update</button>
+  </form>
+
+  <table id="data-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    let selectedRow = null;
+
+    const form = document.getElementById("crud-form");
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const updateBtn = document.getElementById("updateBtn");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+
+      if (!name || !email) return;
+
+      if (selectedRow) {
+        // Update
+        selectedRow.cells[0].textContent = name;
+        selectedRow.cells[1].textContent = email;
+        selectedRow = null;
+        updateBtn.style.display = "none";
+        form.querySelector('button[type="submit"]').style.display = "inline";
+      } else {
+        // Create
+        const table = document.querySelector("#data-table tbody");
+        const row = table.insertRow();
+
+        row.innerHTML = `
+          <td>${name}</td>
+          <td>${email}</td>
+          <td>
+            <button onclick="editRow(this)">Edit</button>
+            <button onclick="deleteRow(this)">Delete</button>
+          </td>
+        `;
+      }
+
+      nameInput.value = "";
+      emailInput.value = "";
+    });
+
+    function editRow(button) {
+      selectedRow = button.parentElement.parentElement;
+      nameInput.value = selectedRow.cells[0].textContent;
+      emailInput.value = selectedRow.cells[1].textContent;
+      updateBtn.style.display = "inline";
+      form.querySelector('button[type="submit"]').style.display = "none";
+    }
+
+    function deleteRow(button) {
+      const row = button.parentElement.parentElement;
+      row.remove();
+
+      if (selectedRow === row) {
+        selectedRow = null;
+        nameInput.value = "";
+        emailInput.value = "";
+        updateBtn.style.display = "none";
+        form.querySelector('button[type="submit"]').style.display = "inline";
+      }
+    }
+
+    updateBtn.addEventListener("click", () => {
+      form.dispatchEvent(new Event("submit"));
+    });
+  </script>
+
+</body>
+</html>
